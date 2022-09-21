@@ -1,12 +1,9 @@
 package com.demo.application.data.generator;
 
 import com.demo.application.data.Role;
-import com.demo.application.data.service.UserRepository;
 import com.demo.application.data.entity.User;
+import com.demo.application.data.service.UserRepository;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -14,12 +11,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Set;
+
 @SpringComponent
 public class DataGenerator {
 
     @Bean
     public CommandLineRunner loadData(PasswordEncoder passwordEncoder, ApplicationContext ctx,
-            UserRepository userRepository) {
+                                      UserRepository userRepository) {
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
             if (userRepository.count() != 0L) {

@@ -11,9 +11,9 @@ public class EvaluationGridDto {
 
     private String column3;
 
-    public EvaluationGridDto(String column1, String column2, String column3){
-        this.column1=column1;
-        this.column2=column2;
-        this.column3=column3;
+    public EvaluationGridDto(String column1, String column2, String column3) {
+        this.column1 = column1;
+        this.column2 = column2;
+        this.column3 = column3;
     }
 }

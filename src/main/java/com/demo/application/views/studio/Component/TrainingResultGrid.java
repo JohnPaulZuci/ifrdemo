@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -83,7 +82,9 @@ public class TrainingResultGrid extends Div {
             throw new RuntimeException(e);
         }
 
-    }    public void renderGroupData(String infilepath) {
+    }
+
+    public void renderGroupData(String infilepath) {
         try {
             final CoproHandler.GroupResponse responseGroup = coproHandler.toGroupRequest(infilepath);
             System.out.println("List=====================" + responseGroup);

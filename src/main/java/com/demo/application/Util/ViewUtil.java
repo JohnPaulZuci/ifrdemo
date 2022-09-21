@@ -1,11 +1,7 @@
 package com.demo.application.Util;
 
-import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WebBrowser;
-
-import java.util.Objects;
-import java.util.Optional;
 
 public class ViewUtil {
 
