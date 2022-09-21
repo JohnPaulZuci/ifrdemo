@@ -1,0 +1,3 @@
+:host([theme~="notification-area"]) [part="input-field"]  {
+    color : green;
+}

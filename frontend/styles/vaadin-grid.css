@@ -1,0 +1,7 @@
+:host([theme~='evaluation-grid']) [part~='header-cell'] ::slotted(vaadin-grid-cell-content){
+    font-weight : 600;
+}
+
+:host([theme~='evaluation-grid']) #scroller #table thead tr th{
+    background : rgb(238, 244, 251);
+}

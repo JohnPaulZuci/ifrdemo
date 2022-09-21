@@ -5,6 +5,7 @@
 .project
 .classpath
 
+/lib
 *.iml
 .DS_Store
 
