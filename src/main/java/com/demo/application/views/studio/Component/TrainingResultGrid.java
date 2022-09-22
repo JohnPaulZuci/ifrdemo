@@ -91,12 +91,11 @@ public class TrainingResultGrid extends Div {
 
             groupingMainResult.removeAll();
             groupingMainResult.add(getGroupingResult(responseGroup));
-
             String imgSrc = Objects.requireNonNull(responseGroup.getConfussion_Matrix());
             //String imgSrc = "/home/johnpaul.s@zucisystems.com/Downloads/group_cfm.png";
             StreamResource resource = getStreamResource(imgSrc);
-            deDuplingImage.setSrc(resource);
-            deDuplingImage.getElement().getStyle().set("width", "250px")
+            groupingImage.setSrc(resource);
+            groupingImage.getElement().getStyle().set("width", "250px")
                     .set("height", "180px")
                     .set("object-fit", "contain");
         } catch (Exception e) {
