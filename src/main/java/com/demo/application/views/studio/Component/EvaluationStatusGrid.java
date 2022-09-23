@@ -17,26 +17,20 @@ public class EvaluationStatusGrid extends VerticalLayout {
 
     public EvaluationStatusGrid() {
 
-        evaluationGrid.addColumn(EvaluationGridDto::getColumn1).setHeader("S.No");
-        evaluationGrid.addColumn(EvaluationGridDto::getColumn2).setHeader("Evaluated Filename");
-        evaluationGrid.addColumn(EvaluationGridDto::getColumn3).setHeader("Status");
+        evaluationGrid.addColumn(EvaluationGridDto::getColumn1).setHeader("S.No").setFlexGrow(0);
+        evaluationGrid.addColumn(EvaluationGridDto::getColumn2).setHeader("Evaluated Filename").setFlexGrow(2);
+        evaluationGrid.addColumn(EvaluationGridDto::getColumn3).setHeader("Status").setFlexGrow(1);
         evaluationGrid.addThemeName("evaluation-grid");
         evaluationGrid.setHeight("250px");
         add(evaluationGrid);
     }
 
     public void renderResultData(String filename) {
-        EvaluationGridDto dto1 = new EvaluationGridDto("1", "data12", "data13");
-        EvaluationGridDto dto2 = new EvaluationGridDto("2", "data22", "data23");
-        EvaluationGridDto dto3 = new EvaluationGridDto("3", "data32", "data33");
-        EvaluationGridDto dto4 = new EvaluationGridDto("4", "data44", "data43");
+        EvaluationGridDto dto1 = new EvaluationGridDto("1", filename, "Success");
         List<EvaluationGridDto> gridDtoList = new ArrayList<>();
-        gridDtoList.addAll(Arrays.asList(dto1, dto2, dto3));
-
+        gridDtoList.addAll(Arrays.asList(dto1));
         evaluationGrid.setItems(gridDtoList);
-        gridDtoList.add(dto4);
-        evaluationGrid.getDataProvider().refreshAll();
-        ;
+        //evaluationGrid.getDataProvider().refreshAll();
     }
 
 }
