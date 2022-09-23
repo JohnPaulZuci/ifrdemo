@@ -3,8 +3,8 @@ package com.demo.application.views.studio;
 import com.demo.application.Util.SessionField;
 import com.demo.application.security.AuthenticatedUser;
 import com.demo.application.views.components.upload.UploadComponent;
-import com.demo.application.views.studio.Component.EvaluationStatusGrid;
 import com.demo.application.views.studio.Component.EvaluateResultGrid;
+import com.demo.application.views.studio.Component.EvaluationStatusGrid;
 import com.demo.application.views.studio.Component.TrainingResultGrid;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -32,21 +32,15 @@ import java.util.List;
 @CssImport(value = "./styles/vaadin-text-area.css", themeFor = "vaadin-text-area")
 public class Dashboard extends VerticalLayout {
 
-    private final AuthenticatedUser authenticatedUser;
     TextArea notificationArea = new TextArea();
     Button evaluateButton = new Button("Evaluate");
-    Notification notification = new Notification();
-
 
     public Dashboard(AuthenticatedUser authenticatedUser) {
-        this.authenticatedUser = authenticatedUser;
         //setWidth("fit-content");
         Button logout = new Button(new Icon(VaadinIcon.USER));
         logout.getElement().getStyle().set("position", "absolute").set("right", "10px").set("top", "10px")
                 .set("background-color", "#e5e5e5").set("width", "20px").set("height", "30px");
-        logout.addClickListener(event -> {
-            authenticatedUser.logout();
-        });
+        logout.addClickListener(event -> authenticatedUser.logout());
 
         UploadComponent uploadComponent = UploadComponent.builder()
                 .maxFileSize(100 * 1024 * 1024)
@@ -55,10 +49,11 @@ public class Dashboard extends VerticalLayout {
 
         var trainButton = new Button("Train");
         trainButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        trainButton.getElement().getStyle().set("cursor", "pointer").set("margin-top", "10px").set("margin-left","1rem");
+        trainButton.getElement().getStyle().set("cursor", "pointer").set("margin-top", "10px").set("margin-left", "1rem");
 
         notificationArea.setReadOnly(true);
-        notificationArea.getElement().getStyle().set("background", "#f1f1f1e3").set("border-radius", "3px").set("color", "green").set("margin-left","1rem");
+        notificationArea.getElement().getStyle().set("background", "#f1f1f1e3").set("border-radius", "3px")
+                .set("color", "green").set("margin-left", "1rem");
         notificationArea.setWidth("100%");
         notificationArea.setHeight("250px");
         notificationArea.addThemeName("notification-area");
@@ -71,7 +66,7 @@ public class Dashboard extends VerticalLayout {
 
         TrainingResultGrid trainingResultGrid = new TrainingResultGrid();
         HorizontalLayout resultLayout = new HorizontalLayout(trainingResultGrid);
-        resultLayout.getElement().getStyle().set("padding-left","1rem");
+        resultLayout.getElement().getStyle().set("padding-left", "1rem");
 
         HorizontalLayout attributionLayout = new HorizontalLayout(uploadLayout, resultLayout);
         attributionLayout.getElement().getStyle()
@@ -86,20 +81,16 @@ public class Dashboard extends VerticalLayout {
         evaluationLayout.setPadding(false);
         updateNotification("Upload a file to Train it");
 
-        uploadComponent.getUpload().addSucceededListener(event -> {
-            updateNotification("File Uploaded success");
-        });
+        uploadComponent.getUpload().addSucceededListener(event -> updateNotification("File Uploaded success"));
         //System.out.println(uploadComponent.getUpload().addFinishedListener(finishedEvent -> finishedEvent.getFileName()));
-        uploadComponent.getUpload().addFailedListener(uploadSuccess -> {
-            updateNotification("File Upload success. Reason: Fail to load the  file.");
-        });
+        uploadComponent.getUpload().addFailedListener(uploadSuccess -> updateNotification("File Upload success. Reason: Fail to load the  file."));
 
 
         resultLayout.setVisible(false);
         trainButton.addClickListener(buttonClickEvent -> {
             updateNotification("Training started.");
             updateNotification("Training in-progress.....");
-            SessionField.PROCESS_ID +=1;
+            SessionField.PROCESS_ID += 1;
             List<File> files = uploadComponent.getFiles();
             if (files.size() > 0) {
                 String filename = files.get(0).getAbsolutePath();
@@ -126,8 +117,8 @@ public class Dashboard extends VerticalLayout {
 
 
         evaluateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        evaluateButton.getElement().getStyle().set("cursor", "pointer").set("margin-left","1rem");
-        evaluateButton.setEnabled(false);
+        evaluateButton.getElement().getStyle().set("cursor", "pointer").set("margin-left", "1rem");
+        /////evaluateButton.setEnabled(false);
 
         HorizontalLayout primaryUploadLayout = new HorizontalLayout();
         VerticalLayout uploadLayout = new VerticalLayout();
@@ -149,7 +140,7 @@ public class Dashboard extends VerticalLayout {
         Div secondaryGrid = new Div();
         secondaryGrid.setHeight("50%");
         secondaryGrid.setWidth("98%");
-        secondaryGrid.getElement().getStyle().set("padding-left","2rem");
+        secondaryGrid.getElement().getStyle().set("padding-left", "2rem");
 
 
         // Download button action
@@ -169,24 +160,16 @@ public class Dashboard extends VerticalLayout {
         evaluateResultGrid.setPadding(false);
         secondaryGrid.add(download, evaluateResultGrid);
 
-
-        /*Button downloadButton = new Button("Download", new Icon(VaadinIcon.DOWNLOAD));
+/*        Button downloadButton = new Button("Download", new Icon(VaadinIcon.DOWNLOAD));
         downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         downloadButton.getElement().getStyle().set("margin-left", "10px").set("background-color", "#39c693");
-        secondaryGrid.add(downloadButton, new EvaluateResultGrid());*/
+        EvaluateResultGrid evaluateResultGrid = new EvaluateResultGrid();
+        evaluateResultGrid.setPadding(false);
+        secondaryGrid.add(downloadButton, evaluateResultGrid);*/
 
         VerticalLayout mainLayout = new VerticalLayout(primaryUploadLayout, secondaryGrid);
         secondaryGrid.setVisible(false);
         evaluationstatusGrid.setVisible(false);
-
-       /* evaluateButton.addClickListener(buttonClickEvent -> {
-            List<File> files = uploadComponent.getFiles();
-            if (files.size() > 0) {
-                String filename = files.get(0).getAbsolutePath();
-                System.out.println("============ Evaluate files" + filename);
-                evaluationstatusGrid.renderResultData(filename);
-            }
-        });*/
 
         evaluateButton.addClickListener(event -> {
             List<File> files = uploadComponent.getFiles();
@@ -198,6 +181,25 @@ public class Dashboard extends VerticalLayout {
                 evaluationstatusGrid.setVisible(true);
             }
         });
+
+       /* downloadButton.addClickListener(event -> {
+            try {
+                final File file = new File(SessionField.OUTPUTCSVPATH);
+                FileInputStream infile = new FileInputStream(file);
+                FileOutputStream outfile = new FileOutputStream("Evaluated_result.csv");
+
+                byte[] b = new byte[1024];
+                int len;
+                while((len = infile.read(b, 0, 1024)) > 0){
+                    outfile.write(b, 0, len);
+                }
+
+                infile.close();
+                outfile.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });*/
         return mainLayout;
     }
 

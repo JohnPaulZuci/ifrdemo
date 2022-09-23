@@ -1,6 +1,7 @@
 package com.demo.application.views.studio.Component;
 
 import com.demo.application.Util.CoproHandler;
+import com.demo.application.Util.SessionField;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -26,7 +27,7 @@ public class EvaluateResultGrid extends VerticalLayout {
     private static final Logger LOGGER = LoggerFactory.getLogger(EvaluateResultGrid.class);
     private final CoproHandler coproHandler = new CoproHandler();
 
-    Grid<String[]> resultGrid = new Grid<String[]>();
+    Grid<String[]> resultGrid = new Grid<>();
 
     public EvaluateResultGrid() {
         resultGrid.addThemeName("evaluation-grid");
@@ -38,7 +39,8 @@ public class EvaluateResultGrid extends VerticalLayout {
         try {
             final CoproHandler.EvalResultResponse responseEvalFile = coproHandler
                     .toEvaluateFile(inFilePath);
-            LOGGER.info("Eval Respose:=== ", responseEvalFile.getOutputEvalFile());
+            LOGGER.info("Eval response: {}", responseEvalFile.getOutputEvalFile());
+            SessionField.OUTPUTCSVPATH = responseEvalFile.getOutputEvalFile();
             gridCsvImport(responseEvalFile.getOutputEvalFile());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -46,8 +48,8 @@ public class EvaluateResultGrid extends VerticalLayout {
     }
 
     public void gridCsvImport(String csvFilePAth) {
-        resultGrid.removeAllColumns();
         try {
+            resultGrid.removeAllColumns();
             InputStreamReader csvFileReader = new InputStreamReader(
                     new FileInputStream(csvFilePAth),
                     StandardCharsets.UTF_8
@@ -61,14 +63,13 @@ public class EvaluateResultGrid extends VerticalLayout {
             // Assume the first row contains headers
             String[] headers = entries.get(0);
 
-            // Setup a grid with random data
+            // Set up a grid with random data
             for (int i = 0; i < headers.length; i++) {
                 final int columnIndex = i;
                 String header = headers[i];
                 String humanReadableHeader = SharedUtil.camelCaseToHumanFriendly(header);
                 resultGrid.addColumn(str -> str[columnIndex]).setHeader(humanReadableHeader)
                         .getElement().getStyle().set("font-weight", "600");
-                ;
             }
             resultGrid.setItems(entries.subList(1, entries.size()));
             add(resultGrid);

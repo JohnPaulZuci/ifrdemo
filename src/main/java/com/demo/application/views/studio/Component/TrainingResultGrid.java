@@ -27,7 +27,7 @@ public class TrainingResultGrid extends Div {
     private final CoproHandler coproHandler = new CoproHandler();
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingResultGrid.class);
 
-    Image deDuplingImage;
+    Image deDupingImage;
     Image groupingImage;
     private final FlexLayout groupingMainResult = new FlexLayout();
     private final FlexLayout deDupingMainResult = new FlexLayout();
@@ -35,8 +35,8 @@ public class TrainingResultGrid extends Div {
 
     public TrainingResultGrid() {
 
-        deDuplingImage = new Image();
-        deDuplingImage.getElement().getStyle().set("width", "250px")
+        deDupingImage = new Image();
+        deDupingImage.getElement().getStyle().set("width", "250px")
                 .set("height", "180px")
                 .set("object-fit", "contain");
         groupingImage = new Image();
@@ -48,7 +48,7 @@ public class TrainingResultGrid extends Div {
         deDupingFlexLayout.setAlignItems(FlexComponent.Alignment.END);
         deDupingMainResult.getElement().getStyle().set("overflow", "auto");
 
-        deDupingFlexLayout.add(deDupingHeader(), deDupingMainResult, deDuplingImage);
+        deDupingFlexLayout.add(deDupingHeader(), deDupingMainResult, deDupingImage);
         deDupingFlexLayout.getElement().getStyle().set("border", "1px solid #4d75a9b8")
                 .set("padding", "5px")
                 .set("margin-bottom", "10px")
@@ -66,17 +66,17 @@ public class TrainingResultGrid extends Div {
         add(deDupingFlexLayout, groupingFlexLayout);
     }
 
-    public void renderDeDupData(String infilepath) {
+    public void renderDeDupData(String inFilepath) {
         try {
-            final CoproHandler.DedupeResponse responseDedupe = coproHandler.toDedupe(infilepath);
+            final CoproHandler.DedupeResponse responseDedupe = coproHandler.toDedupe(inFilepath);
             deDupingMainResult.removeAll();
             deDupingMainResult.add(getDeDupingResult(responseDedupe));
 
             String imgSrc = Objects.requireNonNull(responseDedupe.getConfussionmatrix());
             //String imgSrc ="/home/johnpaul.s@zucisystems.com/Downloads/dedup_cfm.png";
             StreamResource resource = getStreamResource(imgSrc);
-            deDuplingImage.setSrc(resource);
-            deDuplingImage.getElement().getStyle().set("width", "250px")
+            deDupingImage.setSrc(resource);
+            deDupingImage.getElement().getStyle().set("width", "250px")
                     .set("height", "180px")
                     .set("object-fit", "contain");
         } catch (Exception e) {
@@ -84,10 +84,10 @@ public class TrainingResultGrid extends Div {
         }
     }
 
-    public void renderGroupData(String infilepath) {
+    public void renderGroupData(String inFilepath) {
         try {
-            final CoproHandler.GroupResponse responseGroup = coproHandler.toGroupRequest(infilepath);
-            System.out.println("List=====================" + responseGroup);
+            final CoproHandler.GroupResponse responseGroup = coproHandler.toGroupRequest(inFilepath);
+            LOGGER.info("Response of Group in List- {}", responseGroup);
 
             groupingMainResult.removeAll();
             groupingMainResult.add(getGroupingResult(responseGroup));
@@ -105,16 +105,14 @@ public class TrainingResultGrid extends Div {
     }
 
     @NotNull
-    private static StreamResource getStreamResource(String imgs) {
-        StreamResource resource =
-                new StreamResource("group_cfm.png", (InputStreamFactory) () -> {
-                    try {
-                        return new FileInputStream(imgs);
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-        return resource;
+    private static StreamResource getStreamResource(String inImagePath) {
+        return new StreamResource("group_cfm.png", (InputStreamFactory) () -> {
+            try {
+                return new FileInputStream(inImagePath);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private Component deDupingHeader() {
@@ -156,28 +154,6 @@ public class TrainingResultGrid extends Div {
         columnDetailLayout.add(getDetailCellDiv(String.valueOf(responseGroup.getTn())));
         columnDetailLayout.add(getDetailCellDiv(String.valueOf(responseGroup.getFp())));
         columnDetailLayout.add(getDetailCellDiv(String.valueOf(responseGroup.getFn())));
-        return columnDetailLayout;
-    }
-
-
-    private Component getResultDetailLayout() {
-        FlexLayout resultDetailLayout = new FlexLayout();
-
-        for (int i = 0; i < 10; i++) {
-            resultDetailLayout.add(getColumnDetailLayout(i));
-
-        }
-        resultDetailLayout.getStyle().set("overflow", "auto");
-        return resultDetailLayout;
-    }
-
-    private Component getColumnDetailLayout(final Integer i) {
-        Div columnDetailLayout = new Div();
-        columnDetailLayout.add(new Div());
-        columnDetailLayout.add(getDetailCellDiv(String.valueOf(1)));
-        columnDetailLayout.add(getDetailCellDiv(String.valueOf(0)));
-        columnDetailLayout.add(getDetailCellDiv(String.valueOf(1)));
-        columnDetailLayout.add(getDetailCellDiv(String.valueOf(0)));
         return columnDetailLayout;
     }
 

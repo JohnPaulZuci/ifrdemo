@@ -4,16 +4,20 @@ import com.demo.application.views.studio.Dto.EvaluationGridDto;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @CssImport(value = "./styles/vaadin-grid.css", themeFor = "vaadin-grid")
 
 public class EvaluationStatusGrid extends VerticalLayout {
-    private final Grid<EvaluationGridDto> evaluationGrid = new Grid<EvaluationGridDto>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(EvaluationStatusGrid.class);
+    private final Grid<EvaluationGridDto> evaluationGrid = new Grid<>();
 
     public EvaluationStatusGrid() {
 
@@ -26,10 +30,16 @@ public class EvaluationStatusGrid extends VerticalLayout {
     }
 
     public void renderResultData(String filename) {
-        EvaluationGridDto dto1 = new EvaluationGridDto("1", filename, "Success");
-        List<EvaluationGridDto> gridDtoList = new ArrayList<>();
-        gridDtoList.addAll(Arrays.asList(dto1));
+        List<EvaluationGridDto> collect = evaluationGrid.getDataProvider()
+                .fetch(new Query<>())
+                .collect(Collectors.toList());
+
+        List<EvaluationGridDto> gridDtoList = new ArrayList<>(collect);
+        EvaluationGridDto dto1 = new EvaluationGridDto(collect.size() + 1, filename, "Success");
+        gridDtoList.add(dto1);
         evaluationGrid.setItems(gridDtoList);
+
+        LOGGER.info("Result grid List provider {}", gridDtoList);
         //evaluationGrid.getDataProvider().refreshAll();
     }
 
