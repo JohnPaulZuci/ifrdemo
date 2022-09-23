@@ -11,6 +11,8 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileInputStream;
@@ -23,6 +25,7 @@ public class TrainingResultGrid extends Div {
 
 
     private final CoproHandler coproHandler = new CoproHandler();
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingResultGrid.class);
 
     Image deDuplingImage;
     Image groupingImage;
@@ -66,8 +69,6 @@ public class TrainingResultGrid extends Div {
     public void renderDeDupData(String infilepath) {
         try {
             final CoproHandler.DedupeResponse responseDedupe = coproHandler.toDedupe(infilepath);
-            System.out.println("List=====================" + responseDedupe);
-
             deDupingMainResult.removeAll();
             deDupingMainResult.add(getDeDupingResult(responseDedupe));
 
@@ -81,7 +82,6 @@ public class TrainingResultGrid extends Div {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void renderGroupData(String infilepath) {
@@ -187,7 +187,6 @@ public class TrainingResultGrid extends Div {
         headerLabel.getElement().getStyle().set("white-space", "nowrap")
                 .set("font-size", "14px")
                 .set("font-family", "Inter")
-                .set("font-size", "16px")
                 .set("font-weight", "600");
         cellDiv.getElement().getStyle().set("border", "1px solid rgba(28, 55, 90, 0.16)")
                 .set("border-radius", "4px")
@@ -200,7 +199,7 @@ public class TrainingResultGrid extends Div {
     private Div getDetailCellDiv(String cellValue) {
         Label cellLabel = new Label(cellValue);
         cellLabel.getElement().getStyle().set("font-family", "Inter")
-                .set("font-size", "16px")
+                .set("font-size", "14px")
                 .set("font-weight", "400");
         Div cellDiv = new Div(cellLabel);
         cellDiv.getElement().getStyle().set("border", "1px solid rgba(28, 55, 90, 0.16)")

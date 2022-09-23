@@ -17,6 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Theme(value = "ifr-demo")
 @PWA(name = "IFR - Demo", shortName = "IFR - Demo", offlineResources = {})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
+@NpmPackage(value = "@fontsource/inter", version = "4.5.12")
+
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {

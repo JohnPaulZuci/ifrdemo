@@ -49,11 +49,11 @@ public class CoproHandler {
         uf.add("PAN");
         ofl.add("Aadhar");
         ofl.add("Group");
-        var requestBody = TrainFileRequest.builder().processId("100")
+        var requestBody = TrainFileRequest.builder().processId("" + SessionField.PROCESS_ID)
                 .inputFile(filePath)
                 .outputFile(destFilePath)
                 .modelFile(destFilePath)
-                .algorithmName("RFC")
+                .algorithmName("ANN")
                 .templateName("DeDuplication")
                 .imputerMethod("False")
                 .outputFeaturesList(ofl)
@@ -66,17 +66,13 @@ public class CoproHandler {
                 .url(AFR_COPRO + "/cub/model/withoutjarowinkler")
                 .post(RequestBody.create(body, JSON))
                 .build();
-
         LOGGER.info("Given request body " + body);
-
         var call = CLIENT.newCall(request);
         try (var response = call.execute()) {
             LOGGER.info("Response body" + response);
-
             if (response.isSuccessful()) {
                 String string = Objects.requireNonNull(response.body()).string();
                 DedupeResponse dedupeResponse = MAPPER.readValue(string, DedupeResponse.class);
-
                 //DedupeResponse dedupeResponse = MAPPER.readValue(string, DedupeResponse.class);
                 LOGGER.info("Response content ===============================" + dedupeResponse.toString());
                 return dedupeResponse;
@@ -84,7 +80,6 @@ public class CoproHandler {
                 LOGGER.info(" Error Response: " + response.message());
             }
         }
-
         throw new Exception("Copro failed for the given request");
     }
 
@@ -97,7 +92,7 @@ public class CoproHandler {
         uf.add("PAN");
         ofl.add("Aadhar");
         ofl.add("Group");
-        var requestBody = TrainFileRequest.builder().processId("200")
+        var requestBody = TrainFileRequest.builder().processId("" + SessionField.PROCESS_ID)
                 .inputFile(filePath)
                 .outputFile(destFilePath)
                 .modelFile(destFilePath)
@@ -124,8 +119,6 @@ public class CoproHandler {
             if (response.isSuccessful()) {
                 String string = Objects.requireNonNull(response.body()).string();
                 GroupResponse groupResponse = MAPPER.readValue(string, GroupResponse.class);
-
-                //DedupeResponse dedupeResponse = MAPPER.readValue(string, DedupeResponse.class);
                 LOGGER.info("Response content ===============================" + groupResponse.toString());
                 return groupResponse;
             } else {
@@ -133,6 +126,57 @@ public class CoproHandler {
             }
         }
 
+        throw new Exception("Copro failed for the given request");
+    }
+
+    public EvalResultResponse toEvaluateFile(final String filePath) throws Exception {
+        ArrayList<String> alg = new ArrayList<>();
+        alg.add("ANN");
+        alg.add("RFC");
+        ArrayList<String> temname = new ArrayList<>();
+        temname.add("DeDuplication");
+        temname.add("Group");
+        ArrayList<String> ofl = new ArrayList<>();
+        ofl.add("Dupe");
+        ArrayList<String> df = new ArrayList<>();
+        df.add("DOB");
+        ArrayList<String> uf = new ArrayList<>();
+        uf.add("PAN");
+        ofl.add("Aadhar");
+        ofl.add("Group");
+        var requestBody = EvalFileRequest.builder().processId("" + SessionField.PROCESS_ID)
+                .inputFile(filePath)
+                .outputFile(destFilePath)
+                .modelFile(destFilePath)
+                .algorithmName(alg)
+                .templateName(temname)
+                .imputerMethod("False")
+                .outputFeaturesList(ofl)
+                .dateFeatures(df)
+                .uniqueFeatures(uf)
+                .build();
+
+        final String body = MAPPER.writeValueAsString(requestBody);
+        var request = new Request.Builder()
+                .url(AFR_COPRO + "/cub/model/withoutjarowinklereval")
+                .post(RequestBody.create(body, JSON))
+                .build();
+
+        LOGGER.info("Given request body " + body);
+
+        var call = CLIENT.newCall(request);
+        try (var response = call.execute()) {
+            LOGGER.info("Response body" + response);
+
+            if (response.isSuccessful()) {
+                String string = Objects.requireNonNull(response.body()).string();
+                EvalResultResponse evalResponse = MAPPER.readValue(string, EvalResultResponse.class);
+                LOGGER.info("Response content ====" + evalResponse.toString());
+                return evalResponse;
+            } else {
+                LOGGER.info(" Error Response: " + response.message());
+            }
+        }
         throw new Exception("Copro failed for the given request");
     }
 
@@ -461,6 +505,39 @@ public class CoproHandler {
         private List<String> uniqueFeatures = new ArrayList<>();
     }
 
+    @Data
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class EvalFileRequest {
+        @NotNull
+        private String processId;
+        @NotNull
+        private String inputFile;
+        @NotNull
+        private String outputFile;
+        @NotNull
+        private String modelFile;
+        @NotNull
+        @Builder.Default
+        private List<String> algorithmName = new ArrayList<>();
+        @NotNull
+        @Builder.Default
+        private List<String> templateName = new ArrayList<>();
+        @NotNull
+        private String imputerMethod;
+        @NotNull
+        @Builder.Default
+        private List<String> outputFeaturesList = new ArrayList<>();
+        @NotNull
+        @Builder.Default
+        private List<String> dateFeatures = new ArrayList<>();
+        @NotNull
+        @Builder.Default
+        private List<String> uniqueFeatures = new ArrayList<>();
+    }
 
     @Data
     @AllArgsConstructor
@@ -494,6 +571,17 @@ public class CoproHandler {
         private String modelFile;
         private String status;
         private String error_message;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class EvalResultResponse {
+        private String processId;
+        private String outputEvalFile;
+        private String status;
+        private String errormessage;
     }
    /* @Data
     @AllArgsConstructor

@@ -2,6 +2,7 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "dependencies": {
+    "@fontsource/inter": "4.5.12",
     "@polymer/iron-icon": "3.0.1",
     "@polymer/iron-iconset-svg": "3.0.1",
     "@polymer/iron-list": "3.1.0",
@@ -255,10 +256,12 @@
     "date-fns": "$date-fns",
     "@vaadin/multi-select-combo-box": "$@vaadin/multi-select-combo-box",
     "proj4": "$proj4",
+    "@fontsource/inter": "$@fontsource/inter",
     "line-awesome": "$line-awesome"
   },
   "vaadin": {
     "dependencies": {
+      "@fontsource/inter": "4.5.12",
       "@polymer/iron-icon": "3.0.1",
       "@polymer/iron-iconset-svg": "3.0.1",
       "@polymer/iron-list": "3.1.0",
@@ -393,6 +396,6 @@
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "04a22aca18bf87fcbcbda2be4a090270ea95bb46a5f61a84d59fc1671536ae89"
+    "hash": "8ba4ca6b602a584b3b88d32f280f25a14778f63613f57f1fa92af10b781593b9"
   }
 }
