@@ -147,7 +147,8 @@ public class Dashboard extends VerticalLayout {
         StreamResource resource = new StreamResource("Evaluated_result.csv",
                 (InputStreamFactory) () -> {
                     try {
-                        final File file = new File("/home/johnpaul.s@zucisystems.com/Downloads/Train_csv.csv");
+                        final File file = new File(SessionField.OUTPUTCSVPATH);
+                        //"/home/johnpaul.s@zucisystems.com/Downloads/Train_csv.csv");
                         return new FileInputStream(file);
                     } catch (Exception e) {
                         throw new RuntimeException("File Not Found");
